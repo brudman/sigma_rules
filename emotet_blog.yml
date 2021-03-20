@@ -1,0 +1,64 @@
+action: global
+title: Emotet AttackRange Experiment
+status: experimental
+description: Detects excecution of Emotet malware
+references:
+    - https://brudman.github.io/Blog/emotet.html
+author: Byron Rudman
+date: 2021/03/20
+modified: 2021/03/20
+detection:
+    condition: selection
+level: high
+---
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        EventID: 11
+        Image:
+            - '*\SysWOW64\licenseskip.exe'
+---
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        EventID: 1
+        hashes:
+          - 'F4D1470AF3A7D82560B38558B132D468'
+          - '4AB3923D3437AC180673760F4D4F5189'
+---
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        EventID: 3
+        DestinationIp: '192.241.220.183'
+        DestinationPort: '8080'
+---
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        EventID: 13
+        TargetObject:
+          - 'HKLM\System\CurrentControlSet\Services\licenseskip\ImagePath'
+          - 'HKLM\System\CurrentControlSet\Services\targetsguid\ImagePath'
+        Details:
+          - '"C:\Windows\SysWOW64\licenseskip.exe"'
+          - '"C:\Windows\SysWOW64\targetsguid.exe"'
+---
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        EventID: 13
+        TargetObject:
+          - 'HKLM\System\CurrentControlSet\Services\licenseskip\Start'
+          - 'HKLM\System\CurrentControlSet\Services\targetsguid\Start'
+        Details: 'DWORD (0x00000002)'
