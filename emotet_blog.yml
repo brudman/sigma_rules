@@ -62,3 +62,11 @@ detection:
           - 'HKLM\System\CurrentControlSet\Services\licenseskip\Start'
           - 'HKLM\System\CurrentControlSet\Services\targetsguid\Start'
         Details: 'DWORD (0x00000002)'
+---
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        EventID: 13
+        TargetObject: 'HKCR\Recalc.Document.1\shell\*'
